@@ -208,6 +208,11 @@ public class estudiantesManage extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(204, 204, 204));
         jLabel3.setText("Nombre");
 
+        nombreTxt.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                nombreTxtMouseClicked(evt);
+            }
+        });
         nombreTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nombreTxtActionPerformed(evt);
@@ -396,6 +401,10 @@ public class estudiantesManage extends javax.swing.JFrame {
             pantallaEdicion.setLocationRelativeTo(null); 
         }
     }//GEN-LAST:event_editBtnActionPerformed
+
+    private void nombreTxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nombreTxtMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nombreTxtMouseClicked
 
     /**
      * @param args the command line arguments
