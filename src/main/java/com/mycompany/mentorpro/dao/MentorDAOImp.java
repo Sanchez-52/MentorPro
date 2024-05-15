@@ -1,8 +1,27 @@
 package com.mycompany.mentorpro.dao;
 
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import com.mycompany.mentorpro.model.Mentor;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -155,5 +174,117 @@ public class MentorDAOImp implements MentorDAO {
         } finally {
             em.close();
         }
+    }
+    
+    //Modulo para generar un informe en pdf
+    @Override
+    public void generarInformePDF() {
+        //Llenado de la lista de estudiantes
+        EntityManager em = emf.createEntityManager();
+        List<Mentor> mentores = null;
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Mentor> cq = cb.createQuery(Mentor.class);
+            Root<Mentor> root = cq.from(Mentor.class);
+
+            // Agregar un predicado para filtrar los estudiantes con isDeleted = false
+            Predicate isNotDeleted = cb.equal(root.get("isDeleted"), false);
+            cq.where(isNotDeleted);
+
+            // Agregar orden ascendente por el código de estudiante
+            cq.orderBy(cb.asc(root.get("codMentor")));
+
+            // Ejecutar la consulta y obtener la lista de estudiantes
+            mentores = em.createQuery(cq).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        //CREACIÓN DEL ARCHIVO PDF
+        // Obtener la fecha actual
+        LocalDate fechaActual = LocalDate.now();
+
+        // Formatear la fecha como "yyyyMMdd"
+        String fechaFormateada = fechaActual.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        
+        //Formatear la fecha como "dd/MM/yyyy"
+        String fechaFormateada2 = fechaActual.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        // Construir la ruta del archivo con la fecha
+        String filePath = "reports/mentores_" + fechaFormateada + ".pdf";
+
+        PdfDocument pdfDoc = null;
+        try {
+            pdfDoc = new PdfDocument(new PdfWriter(new FileOutputStream(filePath)));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MentorDAOImp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Document doc = new Document(pdfDoc);
+
+        // Declarar la fuente (se debe manejar IOException)
+        PdfFont font = null;
+        try {
+            font = PdfFontFactory.createFont();
+        } catch (IOException e) {
+            // Manejar la excepción
+            System.err.println("Error al crear la fuente: " + e.getMessage());
+        }
+
+        if (font != null) {
+            // Agregar el encabezado
+            Paragraph header = new Paragraph("MentorPro").setFont(font).setBold().setFontSize(20).setTextAlignment(TextAlignment.CENTER);
+            doc.add(header);
+
+            // Agregar la fecha
+            Paragraph date = new Paragraph("Lista de mentores | Fecha: " + fechaFormateada2).setFont(font).setFontSize(12).setTextAlignment(TextAlignment.CENTER);
+            doc.add(date);
+
+            // Agrega una tabla al documento para mostrar los datos de los mentores
+            float[] columnWidths = {0.05f, 0.1f, 0.15f, 0.2f, 0.2f, 0.3f, 0.3f};
+            Table table = new Table(UnitValue.createPercentArray(columnWidths)); // 7 columnas para los datos del mentor
+            table.setFontSize(10f);
+
+            // Agrega encabezados de columna a la tabla
+            table.addCell(new Cell().add(new Paragraph("")).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell().add(new Paragraph("Código")).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell().add(new Paragraph("DNI")).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell().add(new Paragraph("Nombre")).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell().add(new Paragraph("Apellido")).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell().add(new Paragraph("Dirección")).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell().add(new Paragraph("Correo")).setTextAlignment(TextAlignment.CENTER));
+
+            // Agrega filas de datos de estudiantes a la tabla
+            int cont = 1;
+            for (Mentor mentor : mentores) {
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(cont))).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell().add(new Paragraph(mentor.getCodMentor().toString())).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell().add(new Paragraph(mentor.getDni())).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell().add(new Paragraph(mentor.getNombre())).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell().add(new Paragraph(mentor.getApellido())).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell().add(new Paragraph(mentor.getDireccion())).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell().add(new Paragraph(mentor.getCorreo())).setTextAlignment(TextAlignment.CENTER));
+                cont++;
+            }
+
+            // Agrega la tabla al documento
+            doc.add(table);
+        }
+        
+        // Intenta abrir el archivo PDF
+        try {
+            File archivoPDF = new File(filePath);
+            if (archivoPDF.exists()) {
+                Desktop.getDesktop().open(archivoPDF);
+            } else {
+                System.out.println("El archivo PDF no existe en la ruta especificada.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error al intentar abrir el archivo PDF: " + e.getMessage());
+        }
+
+        // Cierra el documento
+        doc.close();
     }
 }

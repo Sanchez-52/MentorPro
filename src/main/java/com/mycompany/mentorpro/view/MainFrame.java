@@ -16,7 +16,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         setLocationRelativeTo(null); 
-        tutorBtn.setEnabled(false);
+        sesionesBtn.setEnabled(false);
     }
 
     /**
@@ -32,7 +32,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         estudianteBtn = new javax.swing.JButton();
         mentorBtn = new javax.swing.JButton();
-        tutorBtn = new javax.swing.JButton();
+        sesionesBtn = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 32767));
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 32767));
         jLabel2 = new javax.swing.JLabel();
@@ -72,9 +72,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        tutorBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tutorBtn.setText("Tutor");
-        tutorBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        sesionesBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        sesionesBtn.setText("Sesiones");
+        sesionesBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(204, 204, 204));
@@ -92,7 +92,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(estudianteBtn)
                 .addGap(89, 89, 89)
-                .addComponent(tutorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sesionesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
                 .addComponent(mentorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -111,7 +111,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(estudianteBtn)
                         .addComponent(mentorBtn)
-                        .addComponent(tutorBtn))
+                        .addComponent(sesionesBtn))
                     .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(214, Short.MAX_VALUE))
         );
@@ -193,6 +193,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton mentorBtn;
-    private javax.swing.JButton tutorBtn;
+    private javax.swing.JButton sesionesBtn;
     // End of variables declaration//GEN-END:variables
 }
