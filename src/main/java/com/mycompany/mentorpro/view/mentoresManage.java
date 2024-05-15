@@ -142,8 +142,9 @@ public class mentoresManage extends javax.swing.JFrame {
         dniTxt = new javax.swing.JTextField();
         filterBtn = new javax.swing.JButton();
         insertBtn = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
         editBtn = new javax.swing.JButton();
+        volverBtn = new javax.swing.JButton();
+        imprimirBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -226,20 +227,24 @@ public class mentoresManage extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel6.setText("Volver");
-        jLabel6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel6.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel6MouseClicked(evt);
-            }
-        });
-
         editBtn.setText("Editar");
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editBtnActionPerformed(evt);
+            }
+        });
+
+        volverBtn.setText("Volver");
+        volverBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                volverBtnActionPerformed(evt);
+            }
+        });
+
+        imprimirBtn.setText("Imprimir");
+        imprimirBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imprimirBtnActionPerformed(evt);
             }
         });
 
@@ -255,8 +260,10 @@ public class mentoresManage extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(imprimirBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6))
+                        .addComponent(volverBtn))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -288,10 +295,11 @@ public class mentoresManage extends javax.swing.JFrame {
                     .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel6))
-                        .addGap(22, 22, 22)
+                            .addComponent(volverBtn)
+                            .addComponent(imprimirBtn))
+                        .addGap(20, 20, 20)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(nombreTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -342,14 +350,6 @@ public class mentoresManage extends javax.swing.JFrame {
         agregarFrame.setLocationRelativeTo(null); 
     }//GEN-LAST:event_insertBtnActionPerformed
 
-    private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
-        // TODO add your handling code here:
-        this.setVisible(false);
-        MainFrame mainFrame = new MainFrame();
-        mainFrame.setVisible(true);
-        mainFrame.setLocationRelativeTo(null);
-    }//GEN-LAST:event_jLabel6MouseClicked
-
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
         // Verifica si hay una fila seleccionada en la tabla
@@ -382,6 +382,21 @@ public class mentoresManage extends javax.swing.JFrame {
             pantallaEdicion.setLocationRelativeTo(null); 
         }
     }//GEN-LAST:event_editBtnActionPerformed
+
+    private void volverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverBtnActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        MainFrame mainFrame = new MainFrame();
+        mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
+    }//GEN-LAST:event_volverBtnActionPerformed
+
+    private void imprimirBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imprimirBtnActionPerformed
+        // TODO add your handling code here:
+        //Inicializamos el controlador
+        MentorController controller = new MentorController();
+        controller.generarInformePDF();
+    }//GEN-LAST:event_imprimirBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -427,16 +442,17 @@ public class mentoresManage extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.JButton filterBtn;
+    private javax.swing.JButton imprimirBtn;
     private javax.swing.JButton insertBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField nombreTxt;
     private javax.swing.JTable tablaMentores;
+    private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables
 }

@@ -54,4 +54,9 @@ public class EstudianteController {
         boolean existe = estudiantedao.existeEstudiantePorDni(dni);
         return existe;
     }
+    
+    //Modulo para generar un informe en pdf
+    public void generarInformePDF(){
+        estudiantedao.generarInformePDF();
+    }
 }

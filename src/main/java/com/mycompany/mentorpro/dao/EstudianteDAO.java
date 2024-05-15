@@ -11,4 +11,7 @@ public interface EstudianteDAO {
     public List<Estudiante> getEstudiantesFiltrados(String dni, String nombre, String apellido);
     public Estudiante getEstudiante(Long codEstudiante);
     public boolean existeEstudiantePorDni(String dni);
+    
+    //Modulo para generar un informe en pdf
+    public void generarInformePDF();
 }

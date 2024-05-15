@@ -11,4 +11,7 @@ public interface MentorDAO {
     public List<Mentor> getMentoresFiltrados(String dni, String nombre, String apellido);
     public Mentor getMentor(Long codMentor);
     public boolean existeMentorPorDni(String dni);
+    
+    //Modulo para generar un informe en pdf
+    public void generarInformePDF();
 }

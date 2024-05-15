@@ -54,4 +54,9 @@ public class MentorController {
         boolean existe = mentordao.existeMentorPorDni(dni);
         return existe;
     }
+    
+    //Modulo para generar un informe en pdf
+    public void generarInformePDF(){
+        mentordao.generarInformePDF();
+    }
 }

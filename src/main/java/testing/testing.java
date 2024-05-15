@@ -20,11 +20,14 @@ public class testing {
     public static void main(String[] args) {
         // TODO code application logic here
         EstudianteController estudianteController = new EstudianteController();
+        /*
         List<Estudiante> estudiantes = estudianteController.getEstudiantes();
         for(Estudiante v:estudiantes){
             System.out.println(v.getCodEstudiante() + ", " + v.getNombre() + ", " + v.getApellido());
         }
+        */
         
+        estudianteController.generarInformePDF();
     }
     
 }
