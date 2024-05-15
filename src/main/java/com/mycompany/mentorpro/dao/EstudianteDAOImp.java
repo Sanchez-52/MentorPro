@@ -214,7 +214,7 @@ public class EstudianteDAOImp implements EstudianteDAO {
         String fechaFormateada2 = fechaActual.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         // Construir la ruta del archivo con la fecha
-        String filePath = "reports/reporte_" + fechaFormateada + ".pdf";
+        String filePath = "reports/estudiantes_" + fechaFormateada + ".pdf";
 
         PdfDocument pdfDoc = null;
         try {
