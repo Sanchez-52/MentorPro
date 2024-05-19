@@ -26,13 +26,15 @@ public class SesionMentoriaDAOImp implements SesionMentoriaDAO {
 
     @Override
     public List<SesionMentoria> getSesionesMentoria() {
-        return ;
+        List<SesionMentoria> sesionesMentoria = null;
+        return sesionesMentoria;
     }
 
     //public List<SesionMentoria> getSesionesMentoriaFiltrado()
     @Override
     public SesionMentoria getSesionMentoria(Long id) {
-
+        SesionMentoria sesionMentoria = null;
+        return sesionMentoria;
     }
 
     //Módulo para generar informe PDF
