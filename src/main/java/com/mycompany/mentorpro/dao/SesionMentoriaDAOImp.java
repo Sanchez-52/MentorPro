@@ -12,7 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 public class SesionMentoriaDAOImp implements SesionMentoriaDAO {
-    
+
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Persistencia");
 
     public static void main(String[] args) {
@@ -59,13 +59,13 @@ public class SesionMentoriaDAOImp implements SesionMentoriaDAO {
         }
         return sesionesMentoria;
     }
-    
+
     @Override
-    public List<SesionMentoria> getSesionesMentoriaFiltrado(Date fecha, String nombreMentor, String nombreEstudiante){
+    public List<SesionMentoria> getSesionesMentoriaFiltrado(Date fecha, String nombreMentor, String nombreEstudiante) {
         List<SesionMentoria> sesionesMentoria = null;
         return sesionesMentoria;
     }
-            
+
     @Override
     public SesionMentoria getSesionMentoria(Long id) {
         SesionMentoria sesionMentoria = null;
@@ -74,8 +74,8 @@ public class SesionMentoriaDAOImp implements SesionMentoriaDAO {
 
     //Módulo para generar informe PDF
     @Override
-    public void generarInformePDF(){
-        
+    public void generarInformePDF() {
+
     }
 
 }

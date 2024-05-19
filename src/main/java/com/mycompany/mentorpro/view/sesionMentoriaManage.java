@@ -23,7 +23,8 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
         llenarTablaSesiones();
     }
     
-    public void llenarTablaSesiones(){
+    //Función para llenar la tablaSesiones
+    public void llenarTablaSesiones() {
         //Obtén la lista de sesiones desde el controlador
         List<SesionMentoria> sesiones = sesionMentoriaController.getSesionesMentoria();
         
@@ -34,12 +35,19 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
         model.addColumn("Estudiante");
         model.addColumn("Tipo");
         model.addColumn("Hora");
-        model.addColumn("Duración (horas)");
+        model.addColumn("Duración (h)");
         model.addColumn("Estado");
         
         //Agregar filas a partir de la lista de sesiones
         for (SesionMentoria sesionesMentoria : sesiones) {
-            model.addRow(new Object[]{sesionesMentoria.getFecha(), "", "", sesionesMentoria.getTipoSesion().equals("V") ? "VIRTUAL" : "PRESENCIAL", sesionesMentoria.getHora(), sesionesMentoria.getDuracion(), sesionesMentoria.getEstado()});
+            model.addRow(new Object[]{
+                sesionesMentoria.getFecha(),
+                sesionesMentoria.getCodMentor(),
+                sesionesMentoria.getCodEstudiante(),
+                sesionesMentoria.getTipoSesion().equals("V") ? "VIRTUAL" : "PRESENCIAL",
+                sesionesMentoria.getHora(),
+                sesionesMentoria.getDuracion(),
+                sesionesMentoria.getEstado()});
         }
         
         //Establece el modelo en la tabla
@@ -187,12 +195,12 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel3)
-                                .addComponent(jLabel4)
                                 .addComponent(jLabel5)
                                 .addComponent(filterBtn)
                                 .addComponent(insertBtn)
                                 .addComponent(estudianteTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(mentorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(mentorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel4))
                             .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)

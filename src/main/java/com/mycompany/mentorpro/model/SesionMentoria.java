@@ -19,11 +19,13 @@ public class SesionMentoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="codmentor")
+    //@ManyToOne(fetch = FetchType.EAGER)
+    //@JoinColumn(name="codmentor")
+    @Column(name = "codmentor")
     private Long codMentor;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="codestudiante")
+    //@ManyToOne(fetch = FetchType.EAGER)
+    //@JoinColumn(name="codestudiante")
+    @Column(name = "codestudiante")
     private Long codEstudiante;
     @Column(name = "tiposesion")
     private String tipoSesion;
@@ -35,6 +37,8 @@ public class SesionMentoria {
     private int duracion;
     @Column(name = "estado")
     private String estado;
+    @Column(name = "isdeleted")
+    private boolean isDeleted;
 
     public SesionMentoria() {
     }
@@ -112,6 +116,14 @@ public class SesionMentoria {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public boolean isIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override
