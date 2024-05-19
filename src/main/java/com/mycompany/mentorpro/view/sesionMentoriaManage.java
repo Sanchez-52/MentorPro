@@ -1,25 +1,55 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.mentorpro.view;
 
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
+import com.mycompany.mentorpro.control.SesionMentoriaController;
+import com.mycompany.mentorpro.model.SesionMentoria;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
-/**
- *
- * @author 51933
- */
 public class sesionMentoriaManage extends javax.swing.JFrame {
 
+    private SesionMentoriaController sesionMentoriaController;
+    
     /**
      * Creates new form managingLayout
      */
     public sesionMentoriaManage() {
         initComponents();
+        
+        //Inicializa el controlador
+        sesionMentoriaController = new SesionMentoriaController();
+        
+        //Llena la tabla de sesiones al iniciar la vista
+        llenarTablaSesiones();
+    }
+    
+    public void llenarTablaSesiones(){
+        //Obtén la lista de sesiones desde el controlador
+        List<SesionMentoria> sesiones = sesionMentoriaController.getSesionesMentoria();
+        
+        //Crea un modelo de tabla
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Fecha");
+        model.addColumn("Mentor");
+        model.addColumn("Estudiante");
+        model.addColumn("Tipo");
+        model.addColumn("Hora");
+        model.addColumn("Duración (horas)");
+        model.addColumn("Estado");
+        
+        //Agregar filas a partir de la lista de sesiones
+        for (SesionMentoria sesionesMentoria : sesiones) {
+            model.addRow(new Object[]{sesionesMentoria.getFecha(), "", "", sesionesMentoria.getTipoSesion().equals("V") ? "VIRTUAL" : "PRESENCIAL", sesionesMentoria.getHora(), sesionesMentoria.getDuracion(), sesionesMentoria.getEstado()});
+        }
+        
+        //Establece el modelo en la tabla
+        tablaSesiones.setModel(model);
+        
+        //Configura las celdas de la tabla como no editables
+        for (int i = 0; i < tablaSesiones.getColumnCount(); i++){
+            TableColumn column = tablaSesiones.getColumnModel().getColumn(i);
+            column.setCellEditor(null);
+        }
     }
 
     /**
@@ -37,7 +67,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(50, 0), new java.awt.Dimension(50, 0), new java.awt.Dimension(50, 32767));
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(60, 0), new java.awt.Dimension(60, 0), new java.awt.Dimension(60, 32767));
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaSesiones = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -64,7 +94,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(204, 204, 204));
         jLabel2.setText("Sesiones de Mentoría");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaSesiones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null},
                 {null},
@@ -75,7 +105,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
                 "sample"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaSesiones);
 
         jLabel3.setForeground(new java.awt.Color(204, 204, 204));
         jLabel3.setText("Estudiante");
@@ -250,8 +280,8 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField mentorTxt;
+    private javax.swing.JTable tablaSesiones;
     private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables
 }
