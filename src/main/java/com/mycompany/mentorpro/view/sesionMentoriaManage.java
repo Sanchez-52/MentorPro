@@ -278,8 +278,9 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
     private void insertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBtnActionPerformed
         // TODO add your handling code here:
         this.setVisible(false);
-        insertLayout agregarFrame = new insertLayout();
-        agregarFrame.setVisible(true);
+        sesionMentoriaInsert agregarSesion = new sesionMentoriaInsert();
+        agregarSesion.setVisible(true);
+        agregarSesion.setLocationRelativeTo(null);
     }//GEN-LAST:event_insertBtnActionPerformed
 
     /**
