@@ -1,6 +1,8 @@
 package com.mycompany.mentorpro.dao;
 
 import com.mycompany.mentorpro.model.SesionMentoria;
+import com.mycompany.mentorpro.model.SesionMentoriaDetalle;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -35,17 +37,13 @@ public class SesionMentoriaDAOImp implements SesionMentoriaDAO {
     }
 
     @Override
-    public List<SesionMentoria> getSesionesMentoria() {
+    public List<SesionMentoriaDetalle> getSesionesMentoria() {
         EntityManager em = emf.createEntityManager();
-        List<SesionMentoria> sesionesMentoria = null;
+        List<SesionMentoriaDetalle> sesionesMentoria = null;
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<SesionMentoria> cq = cb.createQuery(SesionMentoria.class);
-            Root<SesionMentoria> root = cq.from(SesionMentoria.class);
-
-            // Agregar un predicado para filtrar las sesiones con isDeleted = false
-            Predicate isNotDeleted = cb.equal(root.get("isDeleted"), false);
-            cq.where(isNotDeleted);
+            CriteriaQuery<SesionMentoriaDetalle> cq = cb.createQuery(SesionMentoriaDetalle.class);
+            Root<SesionMentoriaDetalle> root = cq.from(SesionMentoriaDetalle.class);
 
             // Agregar orden ascendente por la fecha
             cq.orderBy(cb.asc(root.get("fecha")));
@@ -61,8 +59,45 @@ public class SesionMentoriaDAOImp implements SesionMentoriaDAO {
     }
 
     @Override
-    public List<SesionMentoria> getSesionesMentoriaFiltrado(Date fecha, String nombreMentor, String nombreEstudiante) {
-        List<SesionMentoria> sesionesMentoria = null;
+    public List<SesionMentoriaDetalle> getSesionesMentoriaFiltrado(Date fecha, String nombreMentor, String nombreEstudiante) {
+        EntityManager em = emf.createEntityManager();
+        List<SesionMentoriaDetalle> sesionesMentoria = null;
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<SesionMentoriaDetalle> cq = cb.createQuery(SesionMentoriaDetalle.class);
+            Root<SesionMentoriaDetalle> root = cq.from(SesionMentoriaDetalle.class);
+
+            // Agregar criterios de filtrado
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Filtrar por fecha si se proporciona una fecha
+            if (fecha != null) {
+                predicates.add(cb.equal(root.get("fecha"), fecha));
+            }
+
+            // Filtrar por nombre de mentor si se proporciona un nombre de mentor
+            if (nombreMentor != null && !nombreMentor.isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("nombreMentor")), "%" + nombreMentor.toLowerCase() + "%"));
+            }
+
+            // Filtrar por nombre de estudiante si se proporciona un nombre de estudiante
+            if (nombreEstudiante != null && !nombreEstudiante.isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("nombreEstudiante")), "%" + nombreEstudiante.toLowerCase() + "%"));
+            }
+
+            // Agregar todos los predicados al criterio de consulta
+            cq.where(predicates.toArray(new Predicate[0]));
+
+            // Agregar orden ascendente por la fecha
+            cq.orderBy(cb.asc(root.get("fecha")));
+
+            // Ejecutar la consulta y obtener la lista de estudiantes
+            sesionesMentoria = em.createQuery(cq).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
         return sesionesMentoria;
     }
 

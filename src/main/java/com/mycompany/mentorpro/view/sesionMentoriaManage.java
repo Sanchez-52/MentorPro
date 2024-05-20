@@ -2,6 +2,8 @@ package com.mycompany.mentorpro.view;
 
 import com.mycompany.mentorpro.control.SesionMentoriaController;
 import com.mycompany.mentorpro.model.SesionMentoria;
+import com.mycompany.mentorpro.model.SesionMentoriaDetalle;
+import java.util.Date;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -9,25 +11,25 @@ import javax.swing.table.TableColumn;
 public class sesionMentoriaManage extends javax.swing.JFrame {
 
     private SesionMentoriaController sesionMentoriaController;
-    
+
     /**
      * Creates new form managingLayout
      */
     public sesionMentoriaManage() {
         initComponents();
-        
+
         //Inicializa el controlador
         sesionMentoriaController = new SesionMentoriaController();
-        
+
         //Llena la tabla de sesiones al iniciar la vista
         llenarTablaSesiones();
     }
-    
+
     //Función para llenar la tablaSesiones
     public void llenarTablaSesiones() {
         //Obtén la lista de sesiones desde el controlador
-        List<SesionMentoria> sesiones = sesionMentoriaController.getSesionesMentoria();
-        
+        List<SesionMentoriaDetalle> sesiones = sesionMentoriaController.getSesionesMentoria();
+
         //Crea un modelo de tabla
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Fecha");
@@ -37,24 +39,67 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
         model.addColumn("Hora");
         model.addColumn("Duración (h)");
         model.addColumn("Estado");
-        
+
         //Agregar filas a partir de la lista de sesiones
-        for (SesionMentoria sesionesMentoria : sesiones) {
+        for (SesionMentoriaDetalle sesionesMentoria : sesiones) {
             model.addRow(new Object[]{
                 sesionesMentoria.getFecha(),
-                sesionesMentoria.getCodMentor(),
-                sesionesMentoria.getCodEstudiante(),
+                sesionesMentoria.getNombreMentor(),
+                sesionesMentoria.getNombreEstudiante(),
                 sesionesMentoria.getTipoSesion().equals("V") ? "VIRTUAL" : "PRESENCIAL",
                 sesionesMentoria.getHora(),
                 sesionesMentoria.getDuracion(),
                 sesionesMentoria.getEstado()});
         }
-        
+
         //Establece el modelo en la tabla
         tablaSesiones.setModel(model);
-        
+
         //Configura las celdas de la tabla como no editables
-        for (int i = 0; i < tablaSesiones.getColumnCount(); i++){
+        for (int i = 0; i < tablaSesiones.getColumnCount(); i++) {
+            TableColumn column = tablaSesiones.getColumnModel().getColumn(i);
+            column.setCellEditor(null);
+        }
+    }
+
+    public void llenarTablaSesionesFiltrado() {
+        //Obtener los criterios de filtrado de la vista
+        Date fecha = fechaPicker.getDate();
+        
+        String nombreMentor = mentorTxt.getText();
+        
+        String nombreEstudiante = estudianteTxt.getText();
+        
+        //Obtén la lista de sesiones desde el controlador
+        List<SesionMentoriaDetalle> sesiones = sesionMentoriaController.getSesionesMentoriaFiltrado(fecha, nombreMentor, nombreEstudiante);
+
+        //Crea un modelo de tabla
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Fecha");
+        model.addColumn("Mentor");
+        model.addColumn("Estudiante");
+        model.addColumn("Tipo");
+        model.addColumn("Hora");
+        model.addColumn("Duración (h)");
+        model.addColumn("Estado");
+
+        //Agregar filas a partir de la lista de sesiones
+        for (SesionMentoriaDetalle sesionesMentoria : sesiones) {
+            model.addRow(new Object[]{
+                sesionesMentoria.getFecha(),
+                sesionesMentoria.getNombreMentor(),
+                sesionesMentoria.getNombreEstudiante(),
+                sesionesMentoria.getTipoSesion().equals("V") ? "VIRTUAL" : "PRESENCIAL",
+                sesionesMentoria.getHora(),
+                sesionesMentoria.getDuracion(),
+                sesionesMentoria.getEstado()});
+        }
+
+        //Establece el modelo en la tabla
+        tablaSesiones.setModel(model);
+
+        //Configura las celdas de la tabla como no editables
+        for (int i = 0; i < tablaSesiones.getColumnCount(); i++) {
             TableColumn column = tablaSesiones.getColumnModel().getColumn(i);
             column.setCellEditor(null);
         }
@@ -83,7 +128,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
         insertBtn = new javax.swing.JButton();
         imprimirBtn = new javax.swing.JButton();
         volverBtn = new javax.swing.JButton();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        fechaPicker = new com.toedter.calendar.JDateChooser();
         estudianteTxt = new javax.swing.JTextField();
         mentorTxt = new javax.swing.JTextField();
 
@@ -161,7 +206,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(fechaPicker, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -201,7 +246,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
                                 .addComponent(estudianteTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(mentorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel4))
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(fechaPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(33, Short.MAX_VALUE))))
@@ -227,6 +272,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
 
     private void filterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterBtnActionPerformed
         // TODO add your handling code here:
+        llenarTablaSesionesFiltrado();
     }//GEN-LAST:event_filterBtnActionPerformed
 
     private void insertBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertBtnActionPerformed
@@ -275,12 +321,12 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField estudianteTxt;
+    private com.toedter.calendar.JDateChooser fechaPicker;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.JButton filterBtn;
     private javax.swing.JButton imprimirBtn;
     private javax.swing.JButton insertBtn;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

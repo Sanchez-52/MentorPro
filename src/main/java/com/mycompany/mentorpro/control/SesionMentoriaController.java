@@ -3,6 +3,7 @@ package com.mycompany.mentorpro.control;
 import com.mycompany.mentorpro.dao.SesionMentoriaDAO;
 import com.mycompany.mentorpro.dao.SesionMentoriaDAOImp;
 import com.mycompany.mentorpro.model.SesionMentoria;
+import com.mycompany.mentorpro.model.SesionMentoriaDetalle;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +31,11 @@ public class SesionMentoriaController {
 
     }
 
-    public List<SesionMentoria> getSesionesMentoria() {
+    public List<SesionMentoriaDetalle> getSesionesMentoria() {
         return sesionmentoriadao.getSesionesMentoria();
     }
     
-    public List<SesionMentoria> getSesionesMentoriaFiltrado(Date fecha, String nombreMentor, String nombreEstudiante) {
+    public List<SesionMentoriaDetalle> getSesionesMentoriaFiltrado(Date fecha, String nombreMentor, String nombreEstudiante) {
         return sesionmentoriadao.getSesionesMentoriaFiltrado(fecha, nombreMentor, nombreEstudiante);
     }
     
