@@ -1,27 +1,40 @@
 package com.mycompany.mentorpro.view;
 
+import com.mycompany.mentorpro.control.EstudianteController;
+import com.mycompany.mentorpro.control.MentorController;
+import com.mycompany.mentorpro.control.SesionMentoriaController;
+import com.mycompany.mentorpro.model.Estudiante;
+import com.mycompany.mentorpro.model.Mentor;
+import com.mycompany.mentorpro.model.SesionMentoria;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
+import javax.swing.JOptionPane;
 
 public class sesionMentoriaInsert extends javax.swing.JFrame {
 
-    private Long idSesion;
+    private Long id;
 
-    /**
-     * Creates new form insertLayout
-     */
+    //Constructor por defecto
     public sesionMentoriaInsert() {
         iniciarHorasDisponibles();
-        agruparRadioBtn();
-        
         initComponents();
+        cargarMentores();
+        cargarEstudiantes();
+    }
 
+    //Nuevo constructor para editar
+    public sesionMentoriaInsert(Long id) {
+        this.id = id;
+        iniciarHorasDisponibles();
+        initComponents();
     }
 
     //Inicio de función de selección de horas
@@ -54,14 +67,31 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         }
         horaFinCombo.setEnabled(true);
     }
-
-    private void agruparRadioBtn(){
-        ButtonGroup modalidadBtnGroup = new ButtonGroup();
-        modalidadBtnGroup.add(presencialRadio);
-        modalidadBtnGroup.add(virtualRadio);
-    }
-    
     //Fin de función de selección de horas
+
+    //Funciones para cargar los Mentores y Estudiantes a los comboBox
+    private void cargarMentores() {
+        MentorController mentorController = new MentorController();
+        List<Mentor> mentores = mentorController.getMentores();
+        for (Mentor mentor : mentores) {
+            String item = mentor.getNombre() + " "
+                    + mentor.getApellido() + " - "
+                    + mentor.getCodMentor().toString();
+            mentorCombo.addItem(item);
+        }
+    }
+
+    private void cargarEstudiantes() {
+        EstudianteController estudianteController = new EstudianteController();
+        List<Estudiante> estudiantes = estudianteController.getEstudiantes();
+        for (Estudiante estudiante : estudiantes) {
+            String item = estudiante.getNombre() + " "
+                    + estudiante.getApellido() + " - "
+                    + estudiante.getCodEstudiante().toString();
+            estudianteCombo.addItem(item);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -72,7 +102,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        tituloLabel = new javax.swing.JLabel();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 30), new java.awt.Dimension(0, 30), new java.awt.Dimension(32767, 30));
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -82,16 +112,16 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         cancelarBtn = new javax.swing.JButton();
         agregarBtn = new javax.swing.JButton();
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 15), new java.awt.Dimension(0, 15), new java.awt.Dimension(32767, 15));
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        fechaPicker = new com.toedter.calendar.JDateChooser();
         horaInicioCombo = new javax.swing.JComboBox<>();
         horaFinCombo = new javax.swing.JComboBox<>();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        mentorCombo = new javax.swing.JComboBox<>();
+        estudianteCombo = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         presencialRadio = new javax.swing.JRadioButton();
         virtualRadio = new javax.swing.JRadioButton();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        estadoCombo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -99,9 +129,9 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         jPanel1.setBackground(java.awt.Color.darkGray);
         jPanel1.setPreferredSize(new java.awt.Dimension(450, 500));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel1.setText("Agregar Sesión de Mentoría");
+        tituloLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        tituloLabel.setForeground(new java.awt.Color(204, 204, 204));
+        tituloLabel.setText("Agregar Sesión de Mentoría");
 
         jLabel2.setForeground(new java.awt.Color(204, 204, 204));
         jLabel2.setText("Fecha");
@@ -123,8 +153,13 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         });
 
         agregarBtn.setText("Agregar");
+        agregarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarBtnActionPerformed(evt);
+            }
+        });
 
-        jDateChooser1.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        fechaPicker.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
 
         horaInicioCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Elegir", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00" }));
         horaInicioCombo.addActionListener(new java.awt.event.ActionListener() {
@@ -136,14 +171,17 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         horaFinCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Elegir" }));
         horaFinCombo.setEnabled(false);
 
-        jComboBox1.setMinimumSize(new java.awt.Dimension(291, 22));
+        mentorCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar..." }));
+        mentorCombo.setMinimumSize(new java.awt.Dimension(291, 22));
 
-        jComboBox2.setMinimumSize(new java.awt.Dimension(291, 22));
+        estudianteCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar..." }));
+        estudianteCombo.setMinimumSize(new java.awt.Dimension(291, 22));
 
         jLabel5.setForeground(new java.awt.Color(204, 204, 204));
         jLabel5.setText("Modalidad");
 
         presencialRadio.setForeground(new java.awt.Color(204, 204, 204));
+        presencialRadio.setSelected(true);
         presencialRadio.setText("PRESENCIAL");
 
         virtualRadio.setForeground(new java.awt.Color(204, 204, 204));
@@ -152,56 +190,54 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(204, 204, 204));
         jLabel6.setText("Estado");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Elegir", "PROGRAMADO", "COMPLETADO", "CANCELADO" }));
-        jComboBox3.setMinimumSize(new java.awt.Dimension(291, 22));
+        estadoCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar...", "PROGRAMADO", "COMPLETADO", "CANCELADO" }));
+        estadoCombo.setMinimumSize(new java.awt.Dimension(291, 22));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cancelarBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(agregarBtn)
-                        .addGap(119, 119, 119))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addComponent(tituloLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filler3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(filler5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(filler4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel6))
+                        .addGap(18, 20, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(estadoCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(fechaPicker, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(horaInicioCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(horaFinCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(mentorCombo, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(estudianteCombo, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(filler3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(filler5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(filler4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel6))
-                                .addGap(18, 20, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(jLabel3)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(horaInicioCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(horaFinCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(presencialRadio)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(virtualRadio)))))))
+                                .addComponent(presencialRadio)
+                                .addGap(18, 18, 18)
+                                .addComponent(virtualRadio)))))
                 .addGap(40, 40, 40))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(133, 133, 133)
+                .addComponent(cancelarBtn)
+                .addGap(18, 18, 18)
+                .addComponent(agregarBtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -209,7 +245,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
                 .addGap(0, 41, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(filler3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(tituloLabel))
                 .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -217,15 +253,15 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(horaInicioCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(horaFinCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(fechaPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel2))
                 .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(mentorCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(estudianteCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -234,7 +270,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
                     .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(estadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(49, 49, 49)
                 .addComponent(filler5, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -268,8 +304,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
             List<String> horasFinDisponibles = calcularHorasFinDisponibles(LocalTime.parse(horaInicioSeleccionada));
             // Actualizar las opciones del JComboBox de hora de fin
             actualizarComboBoxFin(horasFinDisponibles);
-        }
-        else{
+        } else {
             horaFinCombo.removeAllItems();
             horaFinCombo.setEnabled(false);
             horaFinCombo.addItem("Elegir");
@@ -283,6 +318,165 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         sesionMentoriaManageFrame.setVisible(true);
         sesionMentoriaManageFrame.setLocationRelativeTo(null);
     }//GEN-LAST:event_cancelarBtnActionPerformed
+
+    private void agregarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarBtnActionPerformed
+        // TODO add your handling code here:
+        Date fecha = null;
+        boolean fechaCompleta = false;
+        Time horaInicio = null;
+        boolean horaInicioCompleta = false;
+        Time horaFin = null;
+        boolean horaFinCompleta = false;
+        Long codMentor = null;
+        boolean codMentorCompleto = false;
+        Long codEstudiante = null;
+        boolean codEstudianteCompleto = false;
+        String tipoSesion = null;
+        int duracion = 0;
+        boolean duracionCompleta = false;
+        String estado = null;
+        boolean estadoCompleto = false;
+        
+        boolean executed = false;
+
+        //Llenado de variable fecha
+        try {
+            fecha = fechaPicker.getDate();
+            fechaCompleta = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            fechaCompleta = false;
+        }
+
+        // Llenado de variable horaInicio
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String horaSeleccionada = (String) horaInicioCombo.getSelectedItem();
+        if (!horaSeleccionada.equals("Elegir")) {
+            try {
+                // Parsear el String a un objeto Date
+                Date date = dateFormat.parse(horaSeleccionada);
+
+                // Convertir el objeto Date a un objeto Time
+                Time inicio = new Time(date.getTime());
+
+                // Usar horaInicio como un objeto Time
+                horaInicio = inicio;
+                horaInicioCompleta = true;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                horaInicioCompleta = false;
+            }
+        } else {
+            horaInicioCompleta = false;
+        }
+
+        //Llenado de variable horaFin
+        horaSeleccionada = (String) horaFinCombo.getSelectedItem();
+        if (!horaSeleccionada.equals("Elegir")) {
+            try {
+                // Parsear el String a un objeto Date
+                Date date = dateFormat.parse(horaSeleccionada);
+
+                // Convertir el objeto Date a un objeto Time
+                Time fin = new Time(date.getTime());
+
+                // Usar horaInicio como un objeto Time
+                horaFin = fin;
+                horaFinCompleta = true;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                horaFinCompleta = false;
+            }
+        } else {
+            horaFinCompleta = false;
+        }
+
+        //Llenado de variable codMentor
+        String temp = (String) mentorCombo.getSelectedItem();
+        if (!temp.equals("Seleccionar...")) {
+            String mentor = temp;
+            mentor = mentor.replaceAll("[^0-9]", "");
+            codMentor = Long.parseLong(mentor);
+            codEstudianteCompleto = true;
+        } else {
+            codEstudianteCompleto = false;
+        }
+
+        //Llenado de variable codEstudiante
+        String temp2 = (String) estudianteCombo.getSelectedItem();
+        if (!temp2.equals("Seleccionar...")) {
+            String estudiante = temp2;
+            estudiante = estudiante.replaceAll("[^0-9]", "");
+            codEstudiante = Long.parseLong(estudiante);
+            codMentorCompleto = true;
+        } else {
+            codMentorCompleto = false;
+        }
+
+        //Llenado de variable tipoSesion
+        if (presencialRadio.isSelected()) {
+            tipoSesion = "P";
+        } else {
+            tipoSesion = "V";
+        }
+
+        //Llenado de variable duracion
+        try {
+            // Calcular la diferencia en milisegundos
+            long diferenciaMilisegundos = horaFin.getTime() - horaInicio.getTime();
+
+            // Convertir la diferencia de milisegundos a horas
+            duracion = (int) (diferenciaMilisegundos / (1000 * 60 * 60));
+            duracionCompleta = true;
+        } catch (Exception e) {
+            duracionCompleta = false;
+        }
+
+        //Lenado de variable estado
+        estado = estadoCombo.getSelectedItem().toString();
+        if (estado.equals("Seleccionar...")) {
+            estadoCompleto = false;
+        } else {
+            estadoCompleto = true;
+        }
+
+        boolean camposCompletos = fechaCompleta && horaInicioCompleta
+                && horaFinCompleta && codEstudianteCompleto
+                && codMentorCompleto && duracionCompleta && estadoCompleto;
+
+        if (!camposCompletos) {
+            JOptionPane.showMessageDialog(null, "Complete todos los campos", "Error", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            //Inicializamos el controlador
+            SesionMentoriaController controller = new SesionMentoriaController();
+
+            //Llenamos la entidad SesionMentoria
+            SesionMentoria sesion = new SesionMentoria();
+            sesion.setCodMentor(codMentor);
+            sesion.setCodEstudiante(codEstudiante);
+            sesion.setHora(horaInicio);
+            sesion.setFecha(fecha);
+            sesion.setTipoSesion(tipoSesion);
+            sesion.setDuracion(duracion);
+            sesion.setEstado(estado);
+
+            //Realiza el insert
+            try {
+                controller.insertarSesionMentoria(sesion);
+                executed = true;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Hubo un error al insertar los datos, inténtelo más tarde", "Error", JOptionPane.ERROR);
+                executed = false;
+            }
+        }
+        if(executed){
+            JOptionPane.showMessageDialog(null, "El registro de datos ha sido exitoso", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            setVisible(false);
+            sesionMentoriaManage adminFrame = new sesionMentoriaManage();
+            adminFrame.setVisible(true);
+            adminFrame.setLocationRelativeTo(null);            
+        }
+    }//GEN-LAST:event_agregarBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -323,16 +517,14 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton agregarBtn;
     private javax.swing.JButton cancelarBtn;
+    private javax.swing.JComboBox<String> estadoCombo;
+    private javax.swing.JComboBox<String> estudianteCombo;
+    private com.toedter.calendar.JDateChooser fechaPicker;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
     private javax.swing.JComboBox<String> horaFinCombo;
     private javax.swing.JComboBox<String> horaInicioCombo;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -340,7 +532,9 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JComboBox<String> mentorCombo;
     private javax.swing.JRadioButton presencialRadio;
+    private javax.swing.JLabel tituloLabel;
     private javax.swing.JRadioButton virtualRadio;
     // End of variables declaration//GEN-END:variables
 }

@@ -23,7 +23,11 @@ public class SesionMentoriaDAOImp implements SesionMentoriaDAO {
 
     @Override
     public void insertarSesionMentoria(SesionMentoria sesionMentoria) {
-
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(sesionMentoria);
+        em.getTransaction().commit();
+        em.close();
     }
 
     @Override

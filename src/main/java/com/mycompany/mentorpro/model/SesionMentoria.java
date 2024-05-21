@@ -1,7 +1,9 @@
 package com.mycompany.mentorpro.model;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,9 +32,9 @@ public class SesionMentoria {
     @Column(name = "tiposesion")
     private String tipoSesion;
     @Column(name = "fecha")
-    private LocalDate fecha;
+    private Date fecha;
     @Column(name = "hora")
-    private LocalTime hora;
+    private Time hora;
     @Column(name = "duracion")
     private int duracion;
     @Column(name = "estado")
@@ -43,7 +45,7 @@ public class SesionMentoria {
     public SesionMentoria() {
     }
 
-    public SesionMentoria(Long id, Long codMentor, Long codEstudiante, String tipoSesion, LocalDate fecha, LocalTime hora, int duracion, String estado) {
+    public SesionMentoria(Long id, Long codMentor, Long codEstudiante, String tipoSesion, Date fecha, Time hora, int duracion, String estado) {
         this.id = id;
         this.codMentor = codMentor;
         this.codEstudiante = codEstudiante;
@@ -86,19 +88,19 @@ public class SesionMentoria {
         this.tipoSesion = tipoSesion;
     }
 
-    public LocalDate getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
-    public LocalTime getHora() {
+    public Time getHora() {
         return hora;
     }
 
-    public void setHora(LocalTime hora) {
+    public void setHora(Time hora) {
         this.hora = hora;
     }
 
