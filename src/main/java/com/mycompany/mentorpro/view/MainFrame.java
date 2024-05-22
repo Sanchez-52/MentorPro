@@ -4,11 +4,18 @@
  */
 package com.mycompany.mentorpro.view;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+
 /**
  *
  * @author 51933
  */
 public class MainFrame extends javax.swing.JFrame {
+
+    String pass = "60fe74406e7f353ed979f350f2fbb6a2e8690a5fa7d1b0c32983d1d8b3f95f67";
 
     /**
      * Creates new form MainFrame
@@ -16,6 +23,83 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         setLocationRelativeTo(null);
+        estudianteBtn.setEnabled(false);
+        sesionesBtn.setEnabled(false);
+        mentorBtn.setEnabled(false);
+        pedirContra();
+    }
+
+    private void pedirContra() {
+        // Crear un campo de contraseña
+        JPasswordField passwordField = new JPasswordField();
+        Object[] message = {
+            "Ingrese su contraseña:", passwordField
+        };
+
+        boolean logged = false;
+
+        while (!logged) {
+            // Mostrar el cuadro de diálogo
+            int option = JOptionPane.showConfirmDialog(null, message, "Contraseña", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            // Manejar la respuesta del usuario
+            if (option == JOptionPane.OK_OPTION) {
+                char[] password = passwordField.getPassword();
+                String passwordStr = new String(password);
+                
+                passwordStr = hash(passwordStr);
+
+                if (!passwordStr.equals(pass)) {
+                    JOptionPane.showMessageDialog(null, "La contraseña es incorrecta.", "Error", JOptionPane.ERROR_MESSAGE);
+                    // Limpiar la contraseña después de usarla por seguridad
+                    passwordField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Bienvenido", "Ingreso exitoso", JOptionPane.INFORMATION_MESSAGE);
+                    logged = true;
+                    habilitarBotones();
+                }
+
+            } else {
+                int opcion = JOptionPane.showConfirmDialog(null, "Está por salir de la aplicación.\n¿Desea continuar?", "Salir", JOptionPane.YES_NO_OPTION);
+                if (opcion == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+        }
+    }
+    
+    private void habilitarBotones(){
+        estudianteBtn.setEnabled(true);
+        sesionesBtn.setEnabled(true);
+        mentorBtn.setEnabled(true);
+    }
+
+    /*
+        FUNCION SHA-256
+     */
+    public static String hash(String input) {
+        try {
+            // Obtener una instancia de MessageDigest con el algoritmo SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            // Aplicar el digest al input
+            byte[] hash = digest.digest(input.getBytes());
+
+            // Convertir el hash de bytes a una representación hexadecimal
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // Manejar una excepción en caso de que el algoritmo no esté disponible
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -144,14 +228,14 @@ public class MainFrame extends javax.swing.JFrame {
         this.setVisible(false);
         estudiantesManage estudiantesFrame = new estudiantesManage();
         estudiantesFrame.setVisible(true);
-        estudiantesFrame.setLocationRelativeTo(null); 
+        estudiantesFrame.setLocationRelativeTo(null);
     }//GEN-LAST:event_estudianteBtnMouseClicked
 
     private void mentorBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mentorBtnMouseClicked
         this.setVisible(false);
         mentoresManage mentoresFrame = new mentoresManage();
-        mentoresFrame.setVisible(true);        
-        mentoresFrame.setLocationRelativeTo(null); 
+        mentoresFrame.setVisible(true);
+        mentoresFrame.setLocationRelativeTo(null);
     }//GEN-LAST:event_mentorBtnMouseClicked
 
     private void sesionesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sesionesBtnActionPerformed
