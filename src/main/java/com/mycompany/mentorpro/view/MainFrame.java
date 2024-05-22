@@ -4,8 +4,12 @@
  */
 package com.mycompany.mentorpro.view;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
@@ -46,7 +50,7 @@ public class MainFrame extends javax.swing.JFrame {
             if (option == JOptionPane.OK_OPTION) {
                 char[] password = passwordField.getPassword();
                 String passwordStr = new String(password);
-                
+
                 passwordStr = hash(passwordStr);
 
                 if (!passwordStr.equals(pass)) {
@@ -67,8 +71,8 @@ public class MainFrame extends javax.swing.JFrame {
             }
         }
     }
-    
-    private void habilitarBotones(){
+
+    private void habilitarBotones() {
         estudianteBtn.setEnabled(true);
         sesionesBtn.setEnabled(true);
         mentorBtn.setEnabled(true);
@@ -102,6 +106,56 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+    private void realizarDatabaseDump() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Seleccione la ubicación");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File directoryToSave = fileChooser.getSelectedFile();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd");
+            String formattedDate = dateFormat.format(new Date());
+            String filePath = directoryToSave.getAbsolutePath() + File.separator + "mentorpro_" + formattedDate +".dump";
+            executePgDump(filePath);
+        }
+    }
+
+    private void executePgDump(String filePath) {
+        String host = "localhost"; // Cambia esto según sea necesario
+        String port = "5432"; // Cambia esto según sea necesario
+        String database = "mentorpro"; // Cambia esto según sea necesario
+        String user = "postgres"; // Cambia esto según sea necesario
+        String password = "admin"; // Cambia esto según sea necesario
+
+        // Comando para ejecutar pg_dump
+        String[] command = {
+            "pg_dump",
+            "--host", host,
+            "--port", port,
+            "--username", user,
+            "--format", "custom",
+            "--file", filePath,
+            database
+        };
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.environment().put("PGPASSWORD", password);
+
+        try {
+            Process process = processBuilder.start();
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                JOptionPane.showMessageDialog(this, "Exportación de base de datos exitosa.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Fallo al exportar la base de datos. Exit code: " + exitCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Un error ocurrió al exportar la base de datos.");
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -119,6 +173,7 @@ public class MainFrame extends javax.swing.JFrame {
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 32767));
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 0), new java.awt.Dimension(150, 32767));
         jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(854, 480));
@@ -169,13 +224,20 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Elija qué gestionar");
 
+        jButton1.setText("Realizar Backup");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(estudianteBtn)
@@ -185,6 +247,10 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(mentorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(60, 60, 60))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,7 +267,9 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(mentorBtn)
                         .addComponent(sesionesBtn))
                     .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(214, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(53, 53, 53))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -246,6 +314,11 @@ public class MainFrame extends javax.swing.JFrame {
         sesionMentoriaFrame.setLocationRelativeTo(null);
     }//GEN-LAST:event_sesionesBtnActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        realizarDatabaseDump();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -285,6 +358,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton estudianteBtn;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
