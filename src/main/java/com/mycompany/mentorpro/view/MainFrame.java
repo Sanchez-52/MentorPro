@@ -15,8 +15,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        setLocationRelativeTo(null); 
-        sesionesBtn.setEnabled(false);
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -75,6 +74,11 @@ public class MainFrame extends javax.swing.JFrame {
         sesionesBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         sesionesBtn.setText("Sesiones");
         sesionesBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        sesionesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sesionesBtnActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(204, 204, 204));
@@ -149,6 +153,14 @@ public class MainFrame extends javax.swing.JFrame {
         mentoresFrame.setVisible(true);        
         mentoresFrame.setLocationRelativeTo(null); 
     }//GEN-LAST:event_mentorBtnMouseClicked
+
+    private void sesionesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sesionesBtnActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        sesionMentoriaManage sesionMentoriaFrame = new sesionMentoriaManage();
+        sesionMentoriaFrame.setVisible(true);
+        sesionMentoriaFrame.setLocationRelativeTo(null);
+    }//GEN-LAST:event_sesionesBtnActionPerformed
 
     /**
      * @param args the command line arguments
