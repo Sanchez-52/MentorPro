@@ -18,6 +18,7 @@ public class mentorInsert extends javax.swing.JFrame {
      * Creates new form insertLayout
      */
     public mentorInsert() {
+        ViewUtils.setWindowIcon(this);
         initComponents();
         
         eliminarBtn.setVisible(false);

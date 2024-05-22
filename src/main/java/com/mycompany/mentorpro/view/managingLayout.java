@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.mentorpro.view;
 
 import javax.swing.text.AbstractDocument;
@@ -9,16 +5,13 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-/**
- *
- * @author 51933
- */
 public class managingLayout extends javax.swing.JFrame {
 
     /**
      * Creates new form managingLayout
      */
     public managingLayout() {
+        ViewUtils.setWindowIcon(this);
         initComponents();
         
         /*Función para que el JTextField de DNI solo acepte

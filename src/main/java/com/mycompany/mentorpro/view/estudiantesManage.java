@@ -19,6 +19,7 @@ public class estudiantesManage extends javax.swing.JFrame {
      * Creates new form managingLayout
      */
     public estudiantesManage() {
+        ViewUtils.setWindowIcon(this);
         initComponents();
 
         /*

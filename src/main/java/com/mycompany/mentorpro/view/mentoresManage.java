@@ -19,6 +19,7 @@ public class mentoresManage extends javax.swing.JFrame {
      * Creates new form managingLayout
      */
     public mentoresManage() {
+        ViewUtils.setWindowIcon(this);
         initComponents();
         
         /*Función para que el JTextField de DNI solo acepte

@@ -26,6 +26,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
 
     //Constructor por defecto
     public sesionMentoriaInsert() {
+        ViewUtils.setWindowIcon(this);
         iniciarHorasDisponibles();
         initComponents();
         cargarMentores();

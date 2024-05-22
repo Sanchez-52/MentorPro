@@ -17,6 +17,7 @@ public class sesionMentoriaManage extends javax.swing.JFrame {
      * Creates new form managingLayout
      */
     public sesionMentoriaManage() {
+        ViewUtils.setWindowIcon(this);
         initComponents();
 
         //Inicializa el controlador

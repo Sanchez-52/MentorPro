@@ -18,6 +18,7 @@ public class estudianteInsert extends javax.swing.JFrame {
      * Creates new form insertLayout
      */
     public estudianteInsert() {
+        ViewUtils.setWindowIcon(this);
         initComponents();
 
         eliminarBtn.setVisible(false);

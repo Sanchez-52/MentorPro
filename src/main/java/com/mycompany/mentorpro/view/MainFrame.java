@@ -25,6 +25,7 @@ public class MainFrame extends javax.swing.JFrame {
      * Creates new form MainFrame
      */
     public MainFrame() {
+        ViewUtils.setWindowIcon(this);
         initComponents();
         setLocationRelativeTo(null);
         estudianteBtn.setEnabled(false);
