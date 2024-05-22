@@ -5,7 +5,9 @@
 package testing;
 
 import com.mycompany.mentorpro.control.EstudianteController;
+import com.mycompany.mentorpro.control.SesionMentoriaController;
 import com.mycompany.mentorpro.model.Estudiante;
+import com.mycompany.mentorpro.model.SesionMentoria;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -19,7 +21,7 @@ public class testing {
     
     public static void main(String[] args) {
         // TODO code application logic here
-        EstudianteController estudianteController = new EstudianteController();
+        //EstudianteController estudianteController = new EstudianteController();
         /*
         List<Estudiante> estudiantes = estudianteController.getEstudiantes();
         for(Estudiante v:estudiantes){
@@ -27,7 +29,12 @@ public class testing {
         }
         */
         
-        estudianteController.generarInformePDF();
+        //estudianteController.generarInformePDF();
+        
+        SesionMentoriaController controller = new SesionMentoriaController();
+        SesionMentoria sesion = controller.getSesionMentoria(7L);
+        
+        System.out.println(sesion);
     }
     
 }

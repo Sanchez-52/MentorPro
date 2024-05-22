@@ -6,6 +6,8 @@ import com.mycompany.mentorpro.control.SesionMentoriaController;
 import com.mycompany.mentorpro.model.Estudiante;
 import com.mycompany.mentorpro.model.Mentor;
 import com.mycompany.mentorpro.model.SesionMentoria;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -14,13 +16,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 
 public class sesionMentoriaInsert extends javax.swing.JFrame {
 
-    private Long id;
+    private Long id = null;
 
     //Constructor por defecto
     public sesionMentoriaInsert() {
@@ -28,16 +30,24 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         initComponents();
         cargarMentores();
         cargarEstudiantes();
+        ButtonGroup modalidad = new ButtonGroup();
+        modalidad.add(presencialRadio);
+        modalidad.add(virtualRadio);
+        presencialRadio.addActionListener(actionListener);
+        virtualRadio.addActionListener(actionListener);
+        eliminarBtn.setVisible(false);
+
     }
 
-    //Nuevo constructor para editar
-    public sesionMentoriaInsert(Long id) {
+    //Función para pasar el codigo de sesion para editar
+    public void setCodSesion(Long id) {
         this.id = id;
-        iniciarHorasDisponibles();
-        initComponents();
+        tituloLabel.setText("Modificar Sesion de Mentoría");
+        eliminarBtn.setVisible(true);
+        llenarCampos();
     }
 
-    //Inicio de función de selección de horas
+    //Inicio de funciones de selección de horas
     List<LocalTime> horasDisponibles = new ArrayList<>();
 
     private void iniciarHorasDisponibles() {
@@ -67,7 +77,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         }
         horaFinCombo.setEnabled(true);
     }
-    //Fin de función de selección de horas
+    //Fin de funciones de selección de horas
 
     //Funciones para cargar los Mentores y Estudiantes a los comboBox
     private void cargarMentores() {
@@ -89,6 +99,64 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
                     + estudiante.getApellido() + " - "
                     + estudiante.getCodEstudiante().toString();
             estudianteCombo.addItem(item);
+        }
+    }
+
+    private void llenarCampos() {
+        SesionMentoriaController controlador = new SesionMentoriaController();
+        SesionMentoria sesion = new SesionMentoria();
+
+        sesion = controlador.getSesionMentoria(id);
+
+        System.out.println("La sesion seleccionada fue " + id);
+
+        //Llenamos el campo fecha
+        fechaPicker.setDate(sesion.getFecha());
+
+        //Llenamos el campos hora inicio y hora fin
+        LocalTime horaInicio = sesion.getHora().toLocalTime();
+        List<String> horasFinDisponibles = calcularHorasFinDisponibles(horaInicio);
+        actualizarComboBoxFin(horasFinDisponibles);
+        horaInicioCombo.setSelectedIndex(horaInicio.getHour() - 9);
+        horaFinCombo.setSelectedIndex(sesion.getDuracion() - 1);
+
+        //Llenamos el campo mentor
+        for (int i = 1; i < mentorCombo.getItemCount(); i++) {
+            String item = mentorCombo.getItemAt(i);
+            item = item.split(" - ")[1];
+            if (item.equals(sesion.getCodMentor().toString())) {
+                mentorCombo.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        //Llenamos el campo estudiante
+        for (int i = 1; i < estudianteCombo.getItemCount(); i++) {
+            String item = estudianteCombo.getItemAt(i);
+            item = item.split(" - ")[1];
+            if (!item.equals(sesion.getCodEstudiante().toString())) {
+            } else {
+                estudianteCombo.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        //Llenamos el campo modalidad
+        if (sesion.getTipoSesion().equals("V")) {
+            virtualRadio.setSelected(true);
+            presencialRadio.setSelected(false);
+        } else {
+            presencialRadio.setSelected(true);
+            virtualRadio.setSelected(false);
+        }
+
+        //Llenamos el campo estado
+        for (int i = 1; i < estadoCombo.getItemCount(); i++) {
+            String item = estadoCombo.getItemAt(i);
+            if (item.equals(sesion.getEstado())) {
+                estadoCombo.setSelectedIndex(i);
+                break;
+            }
         }
     }
 
@@ -122,6 +190,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         virtualRadio = new javax.swing.JRadioButton();
         jLabel6 = new javax.swing.JLabel();
         estadoCombo = new javax.swing.JComboBox<>();
+        eliminarBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -186,12 +255,24 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
 
         virtualRadio.setForeground(new java.awt.Color(204, 204, 204));
         virtualRadio.setText("VIRTUAL");
+        virtualRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                virtualRadioActionPerformed(evt);
+            }
+        });
 
         jLabel6.setForeground(new java.awt.Color(204, 204, 204));
         jLabel6.setText("Estado");
 
         estadoCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar...", "PROGRAMADO", "COMPLETADO", "CANCELADO" }));
         estadoCombo.setMinimumSize(new java.awt.Dimension(291, 22));
+
+        eliminarBtn.setText("Eliminar");
+        eliminarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -203,7 +284,9 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(tituloLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filler3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(filler3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(eliminarBtn))
                     .addComponent(filler5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(filler4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -245,8 +328,10 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
                 .addGap(0, 41, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(filler3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tituloLabel))
-                .addGap(33, 33, 33)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tituloLabel)
+                        .addComponent(eliminarBtn)))
+                .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -336,7 +421,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
         boolean duracionCompleta = false;
         String estado = null;
         boolean estadoCompleto = false;
-        
+
         boolean executed = false;
 
         //Llenado de variable fecha
@@ -452,6 +537,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
 
             //Llenamos la entidad SesionMentoria
             SesionMentoria sesion = new SesionMentoria();
+            sesion.setId(id);
             sesion.setCodMentor(codMentor);
             sesion.setCodEstudiante(codEstudiante);
             sesion.setHora(horaInicio);
@@ -460,23 +546,75 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
             sesion.setDuracion(duracion);
             sesion.setEstado(estado);
 
-            //Realiza el insert
-            try {
-                controller.insertarSesionMentoria(sesion);
-                executed = true;
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Hubo un error al insertar los datos, inténtelo más tarde", "Error", JOptionPane.ERROR);
-                executed = false;
+            if (id == null) {
+                //Realiza el insert
+                try {
+                    controller.insertarSesionMentoria(sesion);
+                    executed = true;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Hubo un error al insertar los datos, inténtelo más tarde", "Error", JOptionPane.ERROR);
+                    executed = false;
+                }
+            } else {
+                //Realiza la modificacion
+                try {
+                    controller.modificarSesionMentoria(sesion);
+                    executed = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Hubo un error al modificar los datos, inténtelo más tarde", "Error", JOptionPane.ERROR_MESSAGE);
+                    executed = false;
+                }
             }
         }
-        if(executed){
+        if (executed) {
             JOptionPane.showMessageDialog(null, "El registro de datos ha sido exitoso", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             setVisible(false);
             sesionMentoriaManage adminFrame = new sesionMentoriaManage();
             adminFrame.setVisible(true);
-            adminFrame.setLocationRelativeTo(null);            
+            adminFrame.setLocationRelativeTo(null);
         }
     }//GEN-LAST:event_agregarBtnActionPerformed
+
+    // Crear ActionListener para los JRadioButton
+    ActionListener actionListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JRadioButton selectedButton = (JRadioButton) e.getSource();
+            if (selectedButton == presencialRadio) {
+                virtualRadio.setSelected(false);
+            } else if (selectedButton == virtualRadio) {
+                presencialRadio.setSelected(false);
+            }
+        }
+    };
+
+    private void virtualRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_virtualRadioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_virtualRadioActionPerformed
+
+    private void eliminarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarBtnActionPerformed
+        // TODO add your handling code here:
+
+        // Mostrar una alerta de confirmación
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar esta sesión?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+
+        // Verificar la opción seleccionada por el usuario
+        if (opcion == JOptionPane.YES_OPTION) {
+            // Si el usuario selecciona "Sí" (YES_OPTION), procede con la eliminación
+            //Inicializamos el controlador
+            SesionMentoriaController controller = new SesionMentoriaController();
+            controller.eliminarSesionMentoria(id);
+
+            this.setVisible(false);
+            sesionMentoriaManage sesionMentoriaManageView = new sesionMentoriaManage();
+            sesionMentoriaManageView.setVisible(true);
+            sesionMentoriaManageView.setLocationRelativeTo(null);
+        } else {
+            // Si el usuario selecciona "No" o cierra el diálogo (NO_OPTION o CANCEL_OPTION), cancela la eliminación
+            // Aquí puedes agregar cualquier código adicional necesario
+        }
+    }//GEN-LAST:event_eliminarBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -517,6 +655,7 @@ public class sesionMentoriaInsert extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton agregarBtn;
     private javax.swing.JButton cancelarBtn;
+    private javax.swing.JButton eliminarBtn;
     private javax.swing.JComboBox<String> estadoCombo;
     private javax.swing.JComboBox<String> estudianteCombo;
     private com.toedter.calendar.JDateChooser fechaPicker;

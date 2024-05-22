@@ -27,8 +27,8 @@ public class SesionMentoriaController {
         sesionmentoriadao.modificarSesionMentoria(sesion);
     }
 
-    public void eliminarSesionMentoria(SesionMentoria sesion) {
-
+    public void eliminarSesionMentoria(Long id) {
+        sesionmentoriadao.eliminarSesionMentoria(id);
     }
 
     public List<SesionMentoriaDetalle> getSesionesMentoria() {
