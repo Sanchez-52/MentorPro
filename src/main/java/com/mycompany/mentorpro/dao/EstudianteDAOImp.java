@@ -36,7 +36,6 @@ public class EstudianteDAOImp implements EstudianteDAO {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Persistencia");
 
     public static void main(String[] args) {
-        EstudianteDAO estudiantedao = new EstudianteDAOImp();
         Estudiante estudiante = new Estudiante();
         estudiante.setCodEstudiante(11L);
         estudiante.setNombre("Sebastian");
@@ -46,10 +45,6 @@ public class EstudianteDAOImp implements EstudianteDAO {
         estudiante.setCorreo("jsebas02san@gmail.com");
         estudiante.setPasswordHash("8ec67a3b88a530b88e5c5a57537d7df88e733516f850e18f9f9bf749ff6a118e");
 
-        List<Estudiante> estudiantes = estudiantedao.getEstudiantes();
-        for (Estudiante v : estudiantes) {
-            System.out.println(v.toString());
-        }
     }
 
     @Override
